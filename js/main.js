@@ -103,6 +103,7 @@ class Player {
         this.imagesFiles.forEach( (image) => {
             background.push(`url(${image.src}) no-repeat`);
         });
+        background.push('red');
         return background;
     }
 
