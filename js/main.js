@@ -116,21 +116,27 @@ class Player {
 
     changeFrame() {
 
+        console.log(`this.currentFrame: ${this.currentFrame}`);
+        console.log(`this.currentRoll: ${this.currentRoll}`);
+
         this.currentFrame += this.direction;
 
-        if (this.currentFrame >= this.imgsByRoll * this.currentRoll) {
+        if (this.currentFrame > this.imgsByRoll * this.currentRoll) {
             this.burn = true;
         }
 
         if (this.loop) {
-            if (this.currentFrame == this.totalImgs) {
+            if (this.currentFrame > this.totalImgs) {
                 this.currentFrame = 1;
+                this.currentRoll = 1;
+                this.burn = false;
+                this.play();
             }
         } else if (this.loopR) {
             if (this.currentFrame == this.totalImgs || this.currentFrame == 1) {
                 this.direction = -this.direction;
             }
-        } else if (this.currentFrame == this.totalImgs) {
+        } else if (this.currentFrame == this.totalImgs + 1) {
             clearInterval(this.intervalID);
         }
 
@@ -188,7 +194,7 @@ const myPlayer = new Player(
     parent=document.getElementById('container'),
     videoW=720, videoH=480, FPS=24,
     mediaFolder='media/stripX4',
-    totalImgs=96,
+    totalImgs=31,
     totalRolls=4, imgsByRoll=24,
     loop=true, loopR=false,
 );
