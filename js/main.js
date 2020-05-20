@@ -24,7 +24,7 @@ class Player {
         this.intervalID;
         this.direction = 1;
         this.currentFrame = 1;
-        this.currentRoll = 0;
+        this.currentRoll = 1;
         this.rolls = this.listRolls();
         this.burn = false;
         this.imagesFiles = [];
@@ -67,7 +67,7 @@ class Player {
             console.log(`imagesURL: ${imagesURL}`);
         }
 
-        const sayhello = (images) => {
+        const registerImages = (images) => {
             this.imagesFiles = [...images];
             console.log(`hello!\n${this.imagesFiles}`);
             this.play();
@@ -83,23 +83,91 @@ class Player {
                 // let imgY = await loadImage('https://picsum.photos/1920/2160');
                 // let imgZ = await loadImage('https://picsum.photos/2160/1080');
             }
-            console.log(`async done`);
-            return sayhello(images);
+            // console.log(`async done`);
+            return registerImages(images);
         }
 
         loadAllImages();
     }
 
+
     buildDOM() {
         this.player = document.createElement('div');
         this.player.id = "player";
-        console.log('DOM built');
+        // console.log('DOM built');
         return this.player;
     }
 
+    bgSetup() {
+        let background = [];
+        this.imagesFiles.forEach( (image) => {
+            background.push(`url(${image.src}) no-repeat`);
+        });
+        return background;
+    }
+
+    bgPositions() {
+        let bgPositions = ['-720px 0', '-720px 0', '-720px 0', '-720px 0'];
+        // 25 => 1 car roll 2 nbimgparroll * currenroll 
+        // bgPositions[this.currentRoll - 1] = `0 ${-this.videoH * (      25          - (       24      * (        2        - 1) ) - 1)}px`;
+        bgPositions[this.currentRoll - 1] = `0 ${-this.videoH * (this.currentFrame - (this.imgsByRoll * (this.currentRoll - 1) ) - 1)}px`;
+        return bgPositions;
+    }
+
+    changeFrame() {
+
+        this.currentFrame += this.direction;
+
+        if (this.currentFrame >= this.imgsByRoll * this.currentRoll) {
+            this.burn = true;
+            // console.log(`BURN at ${this.currentFrame}`);
+            // this.changeRoll();
+            // this.play();
+            // this.burn = false;
+        }
+
+        if (this.loop) {
+            if (this.currentFrame == this.totalImgs) {
+                this.currentFrame = 1;
+            }
+        } else if (this.loopR) {
+            if (this.currentFrame == this.totalImgs || this.currentFrame == 1) {
+                this.direction = -this.direction;
+            }
+        } else if (this.currentFrame == this.totalImgs) {
+            clearInterval(this.intervalID);
+        }
+
+        this.player.style.backgroundPosition = this.bgPositions().join(',');
+
+        if (this.burn) {
+            // console.log(`BURN at ${this.currentFrame}`);
+            this.changeRoll();
+            this.play();
+            this.burn = false;
+        }
+
+    }
+
+
+    changeRoll() {
+        // console.log(`changeRoll ${this.currentRoll}`);
+        this.currentRoll += 1;
+        if (this.currentRoll > this.totalRolls) {
+            this.currentRoll = 1;
+        }
+    }
+
+
     play() {
-        console.log(`Now playing!`);
-        this.player.style.background = `url(${this.imagesFiles[0].src})`;
+        // console.log(`Now playing!`);
+        // this.player.style.background = `url(${this.imagesFiles[this.currentRoll].src})`;
+        this.player.style.background = this.bgSetup().join(',');
+        this.player.style.backgroundPosition = this.bgPositions().join(',');
+        // console.log(`this.bgPositions().join(','): ${this.bgPositions().join(',')}`);
+
+        clearInterval(this.intervalID);
+        this.intervalID = window.setInterval(this.changeFrame.bind(this), 1000 / this.FPS);
     }
  
 }
