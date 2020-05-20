@@ -107,11 +107,9 @@ class Player {
         return background;
     }
 
-    bgPositions() {
-        let bgPositions = ['-720px 0', '-720px 0', '-720px 0', '-720px 0'];
-        // 25 => 1 car roll 2 nbimgparroll * currenroll 
-        // bgPositions[this.currentRoll - 1] = `0 ${-this.videoH * (      25          - (       24      * (        2        - 1) ) - 1)}px`;
-        bgPositions[this.currentRoll - 1] = `0 ${-this.videoH * (this.currentFrame - (this.imgsByRoll * (this.currentRoll - 1) ) - 1)}px`;
+    bgPosition() {
+
+        let bgPositions = `0 ${-this.videoH * (this.currentFrame - (this.imgsByRoll * (this.currentRoll - 1) ) - 1)}px`;
         return bgPositions;
     }
 
@@ -121,10 +119,6 @@ class Player {
 
         if (this.currentFrame >= this.imgsByRoll * this.currentRoll) {
             this.burn = true;
-            // console.log(`BURN at ${this.currentFrame}`);
-            // this.changeRoll();
-            // this.play();
-            // this.burn = false;
         }
 
         if (this.loop) {
@@ -139,7 +133,7 @@ class Player {
             clearInterval(this.intervalID);
         }
 
-        this.player.style.backgroundPosition = this.bgPositions().join(',');
+        this.player.style.backgroundPosition = this.bgPosition();
 
         if (this.burn) {
             // console.log(`BURN at ${this.currentFrame}`);
@@ -152,7 +146,7 @@ class Player {
 
 
     changeRoll() {
-        // console.log(`changeRoll ${this.currentRoll}`);
+        console.log(`changeRoll ${this.currentRoll}`);
         this.currentRoll += 1;
         if (this.currentRoll > this.totalRolls) {
             this.currentRoll = 1;
@@ -161,11 +155,8 @@ class Player {
 
 
     play() {
-        // console.log(`Now playing!`);
-        // this.player.style.background = `url(${this.imagesFiles[this.currentRoll].src})`;
-        this.player.style.background = this.bgSetup().join(',');
-        this.player.style.backgroundPosition = this.bgPositions().join(',');
-        // console.log(`this.bgPositions().join(','): ${this.bgPositions().join(',')}`);
+        console.log(`Play!`);
+        this.player.style.background = `url(${this.imagesFiles[this.currentRoll - 1].src}) no-repeat`;
 
         clearInterval(this.intervalID);
         this.intervalID = window.setInterval(this.changeFrame.bind(this), 1000 / this.FPS);
