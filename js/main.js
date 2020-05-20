@@ -70,7 +70,8 @@ class Player {
         const registerImages = (images) => {
             this.imagesFiles = [...images];
             console.log(`hello!\n${this.imagesFiles}`);
-            this.play();
+            this.warmUp();
+            // this.play();
         }
 
         async function loadAllImages() {
@@ -160,6 +161,25 @@ class Player {
 
         clearInterval(this.intervalID);
         this.intervalID = window.setInterval(this.changeFrame.bind(this), 1000 / this.FPS);
+    }
+
+    warmUp() {
+        this.player.style.opacity = 0;
+
+        let index = 0;
+
+        const rollBG = () => {
+            this.player.style.background = `url(${this.imagesFiles[index].src}) no-repeat`;
+            if (index == this.totalRolls - 1) {
+                clearInterval(warmUpInterval);
+                this.player.style.opacity = 1;
+                this.play();
+            } else {
+                index++;
+            }
+        }
+
+        let warmUpInterval = window.setInterval(rollBG.bind(this), 10 );
     }
  
 }
