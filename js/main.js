@@ -169,10 +169,10 @@ class Player {
 
     }
 
-    goToFrame() {
-        this.currentFrame = 96;
-        this.player.style.backgroundPosition = this.bgPosition();
-    }
+    // goToFrame() {
+    //     this.currentFrame = 96;
+    //     this.player.style.backgroundPosition = this.bgPosition();
+    // }
 
 
     changeRoll() {
@@ -218,7 +218,7 @@ class Player {
 
 const myPlayer = new Player(
     parent=document.getElementById('container'),
-    videoW=720, videoH=480, FPS=30,
+    videoW=720, videoH=480, FPS=12,
     mediaFolder='media/stripX4',
     totalImgs=96,
     totalRolls=4, imgsByRoll=24,
